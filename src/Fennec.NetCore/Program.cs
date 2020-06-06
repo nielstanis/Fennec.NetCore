@@ -50,7 +50,7 @@ namespace Fennec.NetCore
 
         private static async Task AnalyzeAndWrite(Writer writer, string assembly)
         {
-            var loadedAssembly = new AssemblyAnalyzer(assembly);
+            var loadedAssembly = new Analyze.MonoAssemblyAnalyzer(assembly);
             var ass = loadedAssembly.Analyse();
             if (ass.HasError)
             {

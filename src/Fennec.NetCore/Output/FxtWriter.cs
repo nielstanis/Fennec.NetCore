@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Fennec.NetCore.Result;
@@ -8,6 +9,10 @@ namespace Fennec.NetCore.Output
 
     public class FxtWriter : Writer
     {
+        public FxtWriter() : base()
+        {
+
+        }
         public FxtWriter(string outputFolder) : base(outputFolder)
         {
         }
@@ -21,21 +26,35 @@ namespace Fennec.NetCore.Output
             try
             {
                 base.EnsureFolderCreated();
-                using (var f = System.IO.File.CreateText(outputFile))
+                using (var f = System.IO.File.Create(outputFile))
                 {
-                    //for flat file the ordering is important, order by type, methods and sequence of invocation. 
-                    foreach (var t in assemblyResult.Types.OrderBy(x => x.ClassType))
-                    {
-                        foreach (var m in t.Methods.OrderBy(z => z.Name))
-                        {
-                            foreach (var i in m.Invocations.OrderBy(r => r.Sequence))
-                            {
-                                await f.WriteLineAsync($"{t.ClassType}::{m.Name}({m.Parameters})::{i.Invocation}");
-                            }
-                        }
+                    result = await WriteOutputAsync(assemblyResult, f);
+                }
+            }
+            catch (Exception)
+            {
+                result = false;
+            }
+            return result;
+        }
 
+        public override async Task<bool> WriteOutputAsync(AssemblyResult assemblyResult, Stream stream)
+        {
+            bool result = true;
+            try
+            {
+                StreamWriter writer = new StreamWriter(stream);
+                foreach (var t in assemblyResult.Types.OrderBy(x => x.ClassType))
+                {
+                    foreach (var m in t.Methods.OrderBy(z => z.Name))
+                    {
+                        foreach (var i in m.Invocations.OrderBy(r => r.Sequence))
+                        {
+                            await writer.WriteLineAsync($"{t.ClassType}::{m.Name}({m.Parameters})::{i.Invocation}");
+                        }
                     }
                 }
+                await writer.FlushAsync();
             }
             catch (Exception)
             {

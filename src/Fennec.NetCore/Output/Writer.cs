@@ -1,3 +1,4 @@
+using System.IO;
 using System.Threading.Tasks;
 using Fennec.NetCore.Result;
 
@@ -6,6 +7,11 @@ namespace Fennec.NetCore.Output
     public abstract class Writer
     {
         protected readonly string _outputFolder;
+
+        public Writer() : this(Directory.GetCurrentDirectory())
+        {
+
+        }
 
         public Writer(string outputFolder)
         {
@@ -24,5 +30,6 @@ namespace Fennec.NetCore.Output
         }
 
         public abstract Task<bool> WriteOutputAsync(AssemblyResult assemblyResult);
+        public abstract Task<bool> WriteOutputAsync(AssemblyResult assemblyResult, Stream stream);
     }
 }
