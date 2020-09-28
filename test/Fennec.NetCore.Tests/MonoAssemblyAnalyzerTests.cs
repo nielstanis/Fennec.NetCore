@@ -19,11 +19,12 @@ namespace Fennec.NetCore.Tests
         public void BasicConsoleResultTest()
         {
             var x = TestResources.GetTestProjectAssembly("BasicConsole");
-            var result = new MonoAssemblyAnalyzer(x);
-            AssemblyResult assemblyResult = result.Analyse();
+            var result = new MonoAssemblyAnalyzer();
+            AssemblyResult assemblyResult = result.Analyse(x);
             Assert.Equal(2, assemblyResult.Types.Count);
             Assert.Equal("<Module>", assemblyResult.Types[0].ClassType);
             Assert.Equal("BasicConsole.Program", assemblyResult.Types[1].ClassType);
+            Assert.Equal(8, assemblyResult.Invocations.Count);
             
             //Focus on 2nd classtype
             var ct = assemblyResult.Types[1];
@@ -41,11 +42,12 @@ namespace Fennec.NetCore.Tests
         public async void BasicConsoleFxtResultTest()
         {
             var x = TestResources.GetTestProjectAssembly("BasicConsole");
-            var result = new MonoAssemblyAnalyzer(x);
-            AssemblyResult assemblyResult = result.Analyse();
+            var result = new MonoAssemblyAnalyzer();
+            AssemblyResult assemblyResult = result.Analyse(x);
             Assert.Equal(2, assemblyResult.Types.Count);
             Assert.Equal("<Module>", assemblyResult.Types[0].ClassType);
             Assert.Equal("BasicConsole.Program", assemblyResult.Types[1].ClassType);
+            Assert.Equal(8, assemblyResult.Invocations.Count);
 
             //Focus on 2nd classtype
             var ct = assemblyResult.Types[1];
@@ -68,5 +70,13 @@ namespace Fennec.NetCore.Tests
             _output.WriteLine($"Created: {temp}");
         }
         
+        // BasicConsole.Program::.ctor()::System.Object::.ctor()
+        // BasicConsole.Program::Main(System.String[])::System.Console::WriteLine(System.String)
+        // BasicConsole.Program::Main(System.String[])::System.IO.File::Exists(System.String)
+        // BasicConsole.Program::Main(System.String[])::System.IO.File::OpenRead(System.String)
+        // BasicConsole.Program::Main(System.String[])::System.IO.File::Exists(System.String)
+        // BasicConsole.Program::Main(System.String[])::System.IO.File::OpenRead(System.String)
+        // BasicConsole.Program::Main(System.String[])::System.Runtime.Serialization.Formatters.Binary.BinaryFormatter::.ctor()
+        // BasicConsole.Program::Main(System.String[])::System.Runtime.Serialization.Formatters.Binary.BinaryFormatter::Deserialize(System.IO.Stream
     }
 }

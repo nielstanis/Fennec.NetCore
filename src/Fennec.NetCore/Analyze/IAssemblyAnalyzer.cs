@@ -4,6 +4,6 @@ namespace Fennec.NetCore.Analyze
 {
     public interface IAssemblyAnalyzer
     {
-        AssemblyResult Analyse();
+        AssemblyResult Analyse(string assembly);
     }
 }

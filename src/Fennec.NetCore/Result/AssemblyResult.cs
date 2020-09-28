@@ -15,9 +15,12 @@ namespace Fennec.NetCore.Result
             _assembly = assembly;
             _filePath = filePath;
             Types = new List<ClassTypeResult>();
+            Invocations = new List<InvocationResult>();
         }
 
         public List<ClassTypeResult> Types {get; private set;}
+        [JsonIgnore]
+        public List<InvocationResult> Invocations {get; private set;}
 
         [JsonIgnore]
         public System.Exception ExceptionOccurred { get; private set;} 

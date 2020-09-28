@@ -31,5 +31,20 @@ namespace Fennec.NetCore.Output
 
         public abstract Task<bool> WriteOutputAsync(AssemblyResult assemblyResult);
         public abstract Task<bool> WriteOutputAsync(AssemblyResult assemblyResult, Stream stream);
+
+        public async Task<bool> WriteOutputToFileAsync(AssemblyResult assemblyResult, string fileName)
+        {
+            if (assemblyResult is null)
+            {
+                throw new System.ArgumentNullException(nameof(assemblyResult));
+            }
+
+            if (string.IsNullOrEmpty(fileName))
+            {
+                throw new System.ArgumentException($"'{nameof(fileName)}' cannot be null or empty", nameof(fileName));
+            }
+
+            return await WriteOutputAsync(assemblyResult, System.IO.File.OpenWrite(fileName));
+        }
     }
 }

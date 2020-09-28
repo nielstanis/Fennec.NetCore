@@ -8,14 +8,11 @@ namespace Fennec.NetCore.Analyze
 {
     public class MonoAssemblyAnalyzer : IAssemblyAnalyzer
     {
-        private readonly string _assembly;
-
-        public MonoAssemblyAnalyzer(string assembly)
+        public MonoAssemblyAnalyzer()
         {
-            _assembly = assembly;
         }
 
-        public AssemblyResult Analyse()
+        public AssemblyResult Analyse(string _assembly)
         {
             try
             {
@@ -26,14 +23,14 @@ namespace Fennec.NetCore.Analyze
                     foreach (var module in ass.Modules.OrderBy(m => m.FileName))
                         foreach (var classType in module.GetTypes().OrderBy(z => z.FullName).Where(z => !z.IsInterface))
                         {
-                            var typeResult = new ClassTypeResult(classType.FullName, classType.Module.FileName);
+                            var typeResult = new ClassTypeResult(assembly, classType.FullName, classType.Module.FileName);
                             foreach (var method in classType.Methods.Where(e => !e.IsAbstract).OrderBy(e => e.FullName))
                             {
                                 int seq = 0;
                                 if (method.HasBody)
                                 {
                                     string parameters = String.Join(",", method.Parameters.Select(x=>x.ParameterType));
-                                    var methodResult = new MethodResult(method.Name, parameters);
+                                    var methodResult = new MethodResult(typeResult, method.Name, parameters);
 
                                     foreach (var instruction in method.Body.Instructions
                                         .Where(u => ((u.OpCode == OpCodes.Call))
@@ -43,7 +40,7 @@ namespace Fennec.NetCore.Analyze
                                         ))
                                     {
                                         var splits = instruction.Operand.ToString().Split(" ");
-                                        var invoke = new InvocationResult(splits[1], splits[0], seq++);
+                                        var invoke = new InvocationResult(methodResult, splits[1], splits[0], seq++);
                                         methodResult.Invocations.Add(invoke);
                                     }
                                     typeResult.Methods.Add(methodResult);

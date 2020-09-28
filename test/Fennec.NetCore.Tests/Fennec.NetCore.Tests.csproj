@@ -16,6 +16,7 @@
    <ItemGroup>
     <ProjectReference Include="..\..\src\Fennec.NetCore\Fennec.NetCore.csproj" />
     <TestProject Include="..\TestProjects\BasicConsole\BasicConsole.csproj" />
+    <TestProject Include="..\TestProjects\ComplexLibrary\ComplexLibrary.csproj" />
   </ItemGroup>
 
   <Import Project="TestProjectRefs.targets" />

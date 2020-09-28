@@ -12,7 +12,7 @@ namespace Fennec.NetCore
             var app = new CommandLineApplication(throwOnUnexpectedArg: false);
             app.Description = "Dump used API's of .NET assembly/assemblies.";
             app.AddName("Fennec.NetCore");
-            app.FullName = "Fennec.NetCore - .NET Core API dumper";
+            app.FullName = "Fennec.NetCore - .NET Core API dumper & patcher";
             app.HelpOption("-h|--help");
             CommandLineApplicationExtensions.VersionOptionFromAssemblyAttributes(app, "-v|--version", typeof(Program).Assembly);
             var ass = app.Argument("assembly", "List of assemblies or file pattern", true);
@@ -50,8 +50,8 @@ namespace Fennec.NetCore
 
         private static async Task AnalyzeAndWrite(Writer writer, string assembly)
         {
-            var loadedAssembly = new Analyze.MonoAssemblyAnalyzer(assembly);
-            var ass = loadedAssembly.Analyse();
+            var loadedAssembly = new Analyze.MonoAssemblyAnalyzer();
+            var ass = loadedAssembly.Analyse(assembly);
             if (ass.HasError)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
